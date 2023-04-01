@@ -67,8 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '254612421464',
     projectId: 'trxdemo-5f097',
     storageBucket: 'trxdemo-5f097.appspot.com',
-    iosClientId:
-        '254612421464-oai27at40khu9kia33rtt9hjt1uc2vqi.apps.googleusercontent.com',
+    androidClientId: '254612421464-ua3voeh0ephhcqk36b0ol1hm34gobcea.apps.googleusercontent.com',
+    iosClientId: '254612421464-oai27at40khu9kia33rtt9hjt1uc2vqi.apps.googleusercontent.com',
     iosBundleId: 'com.example.transitx',
   );
 
@@ -78,8 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '254612421464',
     projectId: 'trxdemo-5f097',
     storageBucket: 'trxdemo-5f097.appspot.com',
-    iosClientId:
-        '254612421464-oai27at40khu9kia33rtt9hjt1uc2vqi.apps.googleusercontent.com',
+    androidClientId: '254612421464-ua3voeh0ephhcqk36b0ol1hm34gobcea.apps.googleusercontent.com',
+    iosClientId: '254612421464-oai27at40khu9kia33rtt9hjt1uc2vqi.apps.googleusercontent.com',
     iosBundleId: 'com.example.transitx',
   );
 }
