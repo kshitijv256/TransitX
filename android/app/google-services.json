@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "254612421464",
+    "project_id": "trxdemo-5f097",
+    "storage_bucket": "trxdemo-5f097.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254612421464:android:cebe1c7180a9006337032d",
+        "android_client_info": {
+          "package_name": "com.aaddev.my_loc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254612421464-55m260jefaf6pge167m0e663r1rfsgmf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOie_KaPce4cPQXBIcw1al-s9ZeOTwkaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254612421464-55m260jefaf6pge167m0e663r1rfsgmf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "254612421464-oai27at40khu9kia33rtt9hjt1uc2vqi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.transitx"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254612421464:android:e83a8aa2a8aff9d237032d",
+        "android_client_info": {
+          "package_name": "com.example.transitx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254612421464-55m260jefaf6pge167m0e663r1rfsgmf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOie_KaPce4cPQXBIcw1al-s9ZeOTwkaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254612421464-55m260jefaf6pge167m0e663r1rfsgmf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "254612421464-oai27at40khu9kia33rtt9hjt1uc2vqi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.transitx"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
