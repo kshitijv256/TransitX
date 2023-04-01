@@ -24,6 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<PolylineId, Polyline> polylines = {};
   String googleAPiKey = "AIzaSyCoQAA8WPAbzwZ9bdEIGePohJ0rHQSrGyc";
   Map<MarkerId, Marker> markers = {};
+  Location location = new Location();
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
 
   @override
   void initState() {
@@ -35,37 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _addMarker(LatLng(_destLatitude, _destLongitude), "destination",
         BitmapDescriptor.defaultMarkerWithHue(90));
 
-    _getPolyline();
+    _checkService();
+    _locationFetch();
+    // _getPolyline();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Location location = new Location();
-
-    // bool _serviceEnabled;
-    // PermissionStatus _permissionGranted;
-    // LocationData _locationData;
-
-    // _checkService() async {
-    //   _serviceEnabled = await location.serviceEnabled();
-    //   if (!_serviceEnabled) {
-    //     _serviceEnabled = await location.requestService();
-    //     if (!_serviceEnabled) {
-    //       return;
-    //     }
-    //   }
-    // }
-
-    // _locationFetch() async {
-    //   _permissionGranted = await location.hasPermission();
-    //   if (_permissionGranted == PermissionStatus.denied) {
-    //     _permissionGranted = await location.requestPermission();
-    //     if (_permissionGranted != PermissionStatus.granted) {
-    //       return;
-    //     }
-    //   }
-    // }
-
     BorderRadiusGeometry radius = BorderRadius.only(
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
@@ -73,17 +53,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         appBar: AppBar(title: Text("Map")),
         body: Stack(children: <Widget>[
-          GoogleMap(
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(_originLatitude, _originLongitude), zoom: 15),
-              myLocationEnabled: true,
-              tiltGesturesEnabled: true,
-              compassEnabled: true,
-              scrollGesturesEnabled: true,
-              zoomGesturesEnabled: true,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              }),
+          // GoogleMap(
+          //     initialCameraPosition: CameraPosition(
+          //         target: LatLng(_originLatitude, _originLongitude), zoom: 15),
+          //     myLocationEnabled: true,
+          //     tiltGesturesEnabled: true,
+          //     compassEnabled: true,
+          //     scrollGesturesEnabled: true,
+          //     zoomGesturesEnabled: true,
+          //     onMapCreated: (GoogleMapController controller) {
+          //       _controller.complete(controller);
+          //     }),
+          Text(_locationData.toString()),
           SlidingUpPanel(
             panel: Center(
               child: Text("This is the sliding Widget"),
@@ -104,6 +85,28 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: radius,
           ),
         ]));
+  }
+
+  _checkService() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+  }
+
+  _locationFetch() async {
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      } else {
+        _locationData = await location.getLocation();
+      }
+    }
   }
 
   _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
