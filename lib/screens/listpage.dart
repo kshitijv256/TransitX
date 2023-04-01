@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:transitx/models/user.dart';
 
 import '../services/crud.dart';
+import 'add_transport.dart';
 import 'adduser.dart';
 
 class ListPage extends StatefulWidget {
@@ -33,6 +34,22 @@ class _ListPage extends State<ListPage> {
                 context,
                 MaterialPageRoute<dynamic>(
                   builder: (BuildContext context) => AddPage(),
+                ),
+                (route) =>
+                    false, //if you want to disable back feature set to false
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Icons.traffic,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil<dynamic>(
+                context,
+                MaterialPageRoute<dynamic>(
+                  builder: (BuildContext context) => AddTransport(),
                 ),
                 (route) =>
                     false, //if you want to disable back feature set to false

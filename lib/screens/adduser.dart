@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 import '../services/crud.dart';
@@ -45,7 +43,7 @@ class _AddPage extends State<AddPage> {
         },
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Position",
+            hintText: "latitude",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
     final contactField = TextFormField(
@@ -58,7 +56,7 @@ class _AddPage extends State<AddPage> {
         },
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            hintText: "Contact Number",
+            hintText: "longitude",
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))));
 
