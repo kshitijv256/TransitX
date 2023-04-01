@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:transitx/screens/locator.dart';
 import 'package:transitx/screens/tracker.dart';
 
+import 'map.dart';
+
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
@@ -34,8 +36,8 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Map()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Locator()));
               },
               child: const Text('Operator'),
             ),

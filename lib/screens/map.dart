@@ -5,61 +5,66 @@ import 'package:location/location.dart' as loc;
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-class Map extends StatefulWidget {
-  const Map({super.key});
+class MyMap extends StatefulWidget {
+  const MyMap({super.key});
 
   @override
-  State<Map> createState() => _MapState();
+  State<MyMap> createState() => _MapState();
 }
 
-class _MapState extends State<Map> {
+class _MapState extends State<MyMap> {
+  var transport = FirebaseFirestore.instance.collection('Transport');
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // _getLocation();
+    getloc();
   }
 
   loc.Location location = loc.Location();
-  late loc.LocationData destination;
-  late loc.LocationData origin;
   late GoogleMapController _controller;
-  String google_api_key = "";
+  String google_api_key = "AIzaSyAdgVyzBWUVIVpjRoP-HeEL-Y2Z82sCrl0";
   bool _added = false;
+  loc.LocationData origin = loc.LocationData.fromMap({});
+
+  getloc() async {
+    loc.Location location = loc.Location();
+    origin = await location.getLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('Transport').snapshots(),
+      stream: transport.snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (_added) {
-          mymap(snapshot);
-        }
+        // if (_added) {
+        //   mymap(snapshot);
+        // }
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
+        }
+        List markers = [];
+        print(snapshot.data!.docs.length);
+        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+          print(snapshot.data!.docs[i]['lat']);
+
+          markers.add(Marker(
+              position: LatLng(
+                snapshot.data!.docs[i]['lat'],
+                snapshot.data!.docs[i]['long'],
+              ),
+              markerId: MarkerId(snapshot.data!.docs[i].id),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueMagenta)));
         }
         return Stack(children: <Widget>[
           GoogleMap(
             mapType: MapType.normal,
-            markers: {
-              Marker(
-                  position: LatLng(
-                    snapshot.data!.docs.singleWhere(
-                        (element) => element.id == widget.user_id)['lat'],
-                    snapshot.data!.docs.singleWhere(
-                        (element) => element.id == widget.user_id)['long'],
-                  ),
-                  markerId: MarkerId('id'),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueMagenta)),
-            },
+            markers: Set.from(markers),
             initialCameraPosition: CameraPosition(
                 target: LatLng(
-                  snapshot.data!.docs.singleWhere(
-                      (element) => element.id == widget.user_id)['lat'],
-                  snapshot.data!.docs.singleWhere(
-                      (element) => element.id == widget.user_id)['long'],
+                  origin.latitude ?? 27.2,
+                  origin.longitude ?? 75.69,
                 ),
                 zoom: 14.47),
             onMapCreated: (GoogleMapController controller) async {
@@ -77,13 +82,13 @@ class _MapState extends State<Map> {
               ),
             },
           ),
-          SlidingUpPanel(
-              panel: Center(
-                  child: TextButton(
-            child: snapshot.data!.docs
-                .singleWhere((element) => element.id == widget.user_id)['name'],
-            onPressed: getPolyPoints(origin, destination),
-          ))),
+          // SlidingUpPanel(
+          //     panel: Center(
+          //         child: TextButton(
+          //   child: snapshot.data!.docs
+          //       .singleWhere((element) => element.id == widget.user_id)['name'],
+          //   onPressed: getPolyPoints(origin, destination),
+          // ))),
         ]);
       },
     ));
@@ -93,7 +98,7 @@ class _MapState extends State<Map> {
   getPolyPoints(origin, destination) async {
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      google_api_key, // Your Google Map Key
+      google_api_key, // Your Google MyMap Key
       PointLatLng(origin.latitude, origin.longitude),
       PointLatLng(destination.latitude!, destination.longitude!),
     );
@@ -107,24 +112,15 @@ class _MapState extends State<Map> {
     }
   }
 
-  _getLocation() async {
-    try {
-      loc.LocationData _locationResult = await location.getLocation();
-      origin = _locationResult;
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> mymap(AsyncSnapshot<QuerySnapshot> snapshot) async {
-    await _controller
-        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(
-              snapshot.data!.docs.singleWhere(
-                  (element) => element.id == widget.user_id)['latitude'],
-              snapshot.data!.docs.singleWhere(
-                  (element) => element.id == widget.user_id)['longitude'],
-            ),
-            zoom: 14.47)));
-  }
+  // Future<void> mymap(AsyncSnapshot<QuerySnapshot> snapshot) async {
+  //   await _controller
+  //       .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+  //           target: LatLng(
+  //             snapshot.data!.docs.singleWhere(
+  //                 (element) => element.id == widget.user_id)['latitude'],
+  //             snapshot.data!.docs.singleWhere(
+  //                 (element) => element.id == widget.user_id)['longitude'],
+  //           ),
+  //           zoom: 14.47)));
+  // }
 }
