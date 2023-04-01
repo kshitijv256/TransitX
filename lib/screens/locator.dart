@@ -21,7 +21,6 @@ class _LocatorState extends State<Locator> {
   @override
   void initState() {
     super.initState();
-    _requestPermission();
     location.changeSettings(interval: 300, accuracy: loc.LocationAccuracy.high);
     location.enableBackgroundMode(enable: true);
   }
@@ -111,16 +110,5 @@ class _LocatorState extends State<Locator> {
     setState(() {
       _locationSubscription = null;
     });
-  }
-
-  _requestPermission() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      print('done');
-    } else if (status.isDenied) {
-      _requestPermission();
-    } else if (status.isPermanentlyDenied) {
-      openAppSettings();
-    }
   }
 }

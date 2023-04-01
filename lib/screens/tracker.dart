@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'map.dart';
+
 class Tracker extends StatefulWidget {
   const Tracker({super.key});
 
@@ -14,6 +16,14 @@ class _TrackerState extends State<Tracker> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tracker'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => MyMap()));
+              },
+              icon: Icon(Icons.map))
+        ],
       ),
       body: Column(
         children: [
