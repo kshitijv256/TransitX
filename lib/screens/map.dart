@@ -15,13 +15,13 @@ class Map extends StatefulWidget {
 class _MapState extends State<Map> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // _getLocation();
+    _getLocation();
   }
 
   loc.Location location = loc.Location();
-  late loc.LocationData destination;
+  late List points;
+  late List<TextButton> buttons;
   late loc.LocationData origin;
   late GoogleMapController _controller;
   String google_api_key = "";
@@ -34,68 +34,61 @@ class _MapState extends State<Map> {
       stream: FirebaseFirestore.instance.collection('Transport').snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (_added) {
-          mymap(snapshot);
+          _getPoints(snapshot);
         }
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
         }
-        return Stack(children: <Widget>[
-          GoogleMap(
-            mapType: MapType.normal,
-            markers: {
-              Marker(
-                  position: LatLng(
-                    snapshot.data!.docs.singleWhere(
-                        (element) => element.id == widget.user_id)['lat'],
-                    snapshot.data!.docs.singleWhere(
-                        (element) => element.id == widget.user_id)['long'],
-                  ),
-                  markerId: MarkerId('id'),
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueMagenta)),
-            },
-            initialCameraPosition: CameraPosition(
-                target: LatLng(
-                  snapshot.data!.docs.singleWhere(
-                      (element) => element.id == widget.user_id)['lat'],
-                  snapshot.data!.docs.singleWhere(
-                      (element) => element.id == widget.user_id)['long'],
+        return Stack(
+          children: <Widget>[
+            GoogleMap(
+              mapType: MapType.normal,
+              markers: {
+                Marker(
+                    position: LatLng(origin.latitude!, origin.longitude!),
+                    markerId: MarkerId('Your location'),
+                    icon: BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueMagenta)),
+              },
+              initialCameraPosition: CameraPosition(
+                  target: LatLng(origin.latitude!, origin.longitude!),
+                  zoom: 14.47),
+              onMapCreated: (GoogleMapController controller) async {
+                setState(() {
+                  _controller = controller;
+                  _added = true;
+                });
+              },
+              polylines: {
+                Polyline(
+                  polylineId: const PolylineId("route"),
+                  points: polylineCoordinates,
+                  color: const Color(0xFF7B61FF),
+                  width: 6,
                 ),
-                zoom: 14.47),
-            onMapCreated: (GoogleMapController controller) async {
-              setState(() {
-                _controller = controller;
-                _added = true;
-              });
-            },
-            polylines: {
-              Polyline(
-                polylineId: const PolylineId("route"),
-                points: polylineCoordinates,
-                color: const Color(0xFF7B61FF),
-                width: 6,
-              ),
-            },
-          ),
-          SlidingUpPanel(
+              },
+            ),
+            SlidingUpPanel(
               panel: Center(
-                  child: TextButton(
-            child: snapshot.data!.docs
-                .singleWhere((element) => element.id == widget.user_id)['name'],
-            onPressed: getPolyPoints(origin, destination),
-          ))),
-        ]);
+                  child: ListView.builder(
+                      itemCount: buttons.length,
+                      itemBuilder: (BuildContext context, index) {
+                        return buttons[index];
+                      })),
+            )
+          ],
+        );
       },
     ));
   }
 
   List<LatLng> polylineCoordinates = [];
-  getPolyPoints(origin, destination) async {
+  getPolyPoints(origin, lat, long) async {
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       google_api_key, // Your Google Map Key
       PointLatLng(origin.latitude, origin.longitude),
-      PointLatLng(destination.latitude!, destination.longitude!),
+      PointLatLng(lat, long),
     );
     if (result.points.isNotEmpty) {
       result.points.forEach(
@@ -116,15 +109,14 @@ class _MapState extends State<Map> {
     }
   }
 
-  Future<void> mymap(AsyncSnapshot<QuerySnapshot> snapshot) async {
-    await _controller
-        .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(
-              snapshot.data!.docs.singleWhere(
-                  (element) => element.id == widget.user_id)['latitude'],
-              snapshot.data!.docs.singleWhere(
-                  (element) => element.id == widget.user_id)['longitude'],
-            ),
-            zoom: 14.47)));
+  void _getPoints(AsyncSnapshot<QuerySnapshot> snapshot) async {
+    snapshot.data!.docs.forEach((element) {
+      points.add(element);
+    });
+    snapshot.data!.docs.forEach((element) {
+      buttons.add(TextButton(
+          onPressed: getPolyPoints(origin, element['lat'], element['long']),
+          child: Text(element['name'])));
+    });
   }
 }
