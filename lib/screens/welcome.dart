@@ -34,8 +34,8 @@ class _WelcomePageState extends State<WelcomePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Locator()));
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Map()));
               },
               child: const Text('Operator'),
             ),
