@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:transitx/screens/adduser.dart';
 import 'package:transitx/screens/locator.dart';
 import 'package:transitx/screens/listpage.dart';
 import 'package:transitx/screens/welcome.dart';
