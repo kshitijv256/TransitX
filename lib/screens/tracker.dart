@@ -14,20 +14,22 @@ class _TrackerState extends State<Tracker> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 29, 19, 14),
       appBar: AppBar(
-        title: const Text('Tracker'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Map()));
-              },
-              icon: Icon(Icons.map))
-        ],
+        title: const Text('Available Transport'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Map()));
+        },
+        child: Icon(Icons.map),
+        backgroundColor: Colors.red[700],
       ),
       body: Column(
         children: [
-          Text("Normal User"),
           Expanded(
               child: StreamBuilder(
             stream:
@@ -39,34 +41,54 @@ class _TrackerState extends State<Tracker> {
               return ListView.builder(
                   itemCount: snapshot.data?.docs.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      title:
-                          Text(snapshot.data!.docs[index]['name'].toString()),
-                      subtitle: Row(
-                        children: [
-                          Text(snapshot.data!.docs[index]['lat'].toString()),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(snapshot.data!.docs[index]['long'].toString()),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(snapshot.data!.docs[index]['type'].toString()),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(snapshot.data!.docs[index]['route'].toString()),
-                        ],
+                    return Container(
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 174, 43, 43),
+                            Color.fromARGB(255, 152, 31, 31),
+                            Color.fromARGB(255, 121, 17, 17),
+                            Color.fromARGB(255, 85, 6, 6),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      // trailing: IconButton(
-                      //   icon: Icon(Icons.directions),
-                      //   onPressed: () {
-                      //     Navigator.of(context).push(MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             MyMap(snapshot.data!.docs[index].id)));
-                      //   },
-                      // ),
+                      child: ListTile(
+                        textColor: Colors.white,
+                        title: Text(
+                          "Driver Name: " +
+                              snapshot.data!.docs[index]['name'].toString(),
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                                "Transportation type: " +
+                                    snapshot.data!.docs[index]['type']
+                                        .toString(),
+                                style: TextStyle(color: Colors.grey[300])),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text(
+                                "Route No: " +
+                                    snapshot.data!.docs[index]['route']
+                                        .toString(),
+                                style: TextStyle(color: Colors.grey[300])),
+                          ],
+                        ),
+                        // trailing: IconButton(
+                        //   icon: Icon(Icons.directions),
+                        //   onPressed: () {
+                        //     Navigator.of(context).push(MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             MyMap(snapshot.data!.docs[index].id)));
+                        //   },
+                        // ),
+                      ),
                     );
                   });
             },

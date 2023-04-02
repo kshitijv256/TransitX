@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:transitx/screens/locator.dart';
-import 'package:transitx/screens/listpage.dart';
 import 'package:transitx/screens/welcome.dart';
 import 'firebase_options.dart';
-import 'package:transitx/screens/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+String driver = "";
+String googleMapsKey = "";
 
 requestPermission() async {
   var status = await Permission.location.request();
@@ -27,6 +25,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   requestPermission();
+  googleMapsKey = await FirebaseFirestore.instance
+      .collection('keys')
+      .doc('googleMaps')
+      .get()
+      .then((value) => value.data()!['key']);
   runApp(const MyApp());
 }
 

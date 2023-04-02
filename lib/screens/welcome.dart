@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:transitx/screens/get_driver.dart';
 import 'package:transitx/screens/locator.dart';
 import 'package:transitx/screens/tracker.dart';
-
-import 'map.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -15,8 +14,22 @@ class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 29, 19, 14),
         appBar: AppBar(
-          title: const Text('Welcome'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text(
+            'TransitX',
+            style: TextStyle(fontSize: 28),
+          ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => GetDriver()));
+                },
+                icon: Icon(Icons.bus_alert))
+          ],
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -26,20 +39,28 @@ class _WelcomePageState extends State<WelcomePage> {
               height: 0,
               width: MediaQuery.of(context).size.width,
             ),
-            Text("User Type"),
-            ElevatedButton(
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => Tracker()));
               },
-              child: const Text('Normal User'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Locator()));
-              },
-              child: const Text('Operator'),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: Colors.cyan[600],
+                    gradient: LinearGradient(colors: [
+                      Colors.red[400]!,
+                      Colors.red[500]!,
+                      Colors.red[700]!,
+                      Colors.red[900]!
+                    ]),
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Text('Find Transport',
+                    style: TextStyle(
+                      fontSize: 40,
+                      color: Colors.white,
+                    )),
+              ),
             ),
           ],
         ));

@@ -73,7 +73,7 @@ class FirebaseCrud {
     required String route,
   }) async {
     Response response = Response();
-    DocumentReference documentReferencer = _TranspCollection.doc();
+    DocumentReference documentReferencer = _TranspCollection.doc(name);
 
     Map<String, dynamic> data = <String, dynamic>{
       "name": name,
@@ -104,19 +104,14 @@ class FirebaseCrud {
     required String name,
     required double lat,
     required double long,
-    required String type,
-    required String route,
-    required String docId,
   }) async {
     Response response = Response();
-    DocumentReference documentReferencer = _TranspCollection.doc(docId);
+    DocumentReference documentReferencer = _TranspCollection.doc(name);
 
     Map<String, dynamic> data = <String, dynamic>{
       "name": name,
       "lat": lat,
       "long": long,
-      "type": type,
-      "route": route
     };
 
     await documentReferencer.update(data).whenComplete(() {

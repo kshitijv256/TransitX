@@ -25,8 +25,7 @@ class _MapState extends State<Map> {
   List markers = [];
   late loc.LocationData origin = loc.LocationData.fromMap({});
   late GoogleMapController _controller;
-  String google_api_key = "";
-  bool _added = false;
+  String google_api_key = "AIzaSyAYR8atvNipO7PZCDBSz0afIcqZ4D0KRrE";
 
   @override
   Widget build(BuildContext context) {
@@ -35,68 +34,68 @@ class _MapState extends State<Map> {
       topRight: Radius.circular(24.0),
     );
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 29, 19, 14),
+        appBar: AppBar(
+          title: Text("MyMap"),
+          backgroundColor: Color.fromARGB(255, 85, 6, 6),
+        ),
         body: StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('Transport').snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (_added) {
-          _getPoints(snapshot);
-        }
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
-        return Stack(
-          children: <Widget>[
-            GoogleMap(
-              mapType: MapType.normal,
-              markers: {
-                Marker(
-                    position: LatLng(
-                        origin.latitude ?? 27.2, origin.longitude ?? 75.69),
-                    markerId: MarkerId('Your location'),
-                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                        BitmapDescriptor.hueMagenta)),
-              },
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                      origin.latitude ?? 27.2, origin.longitude ?? 75.69),
-                  zoom: 14.47),
-              onMapCreated: (GoogleMapController controller) async {
-                setState(() {
-                  _controller = controller;
-                  _added = true;
-                });
-              },
-              polylines: {
-                Polyline(
-                  polylineId: const PolylineId("route"),
-                  points: polylineCoordinates,
-                  color: const Color(0xFF7B61FF),
-                  width: 6,
+          stream:
+              FirebaseFirestore.instance.collection('Transport').snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
+            _getPoints(snapshot);
+            return Stack(
+              children: <Widget>[
+                GoogleMap(
+                  mapType: MapType.normal,
+                  markers: Set.from(markers),
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                          origin.latitude ?? 27.2, origin.longitude ?? 75.69),
+                      zoom: 14.47),
+                  onMapCreated: (GoogleMapController controller) async {
+                    setState(() {
+                      _controller = controller;
+                      _getPoints(snapshot);
+                    });
+                  },
+                  polylines: {
+                    Polyline(
+                      polylineId: const PolylineId("route"),
+                      points: polylineCoordinates,
+                      color: const Color(0xFF7B61FF),
+                      width: 6,
+                    ),
+                  },
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  compassEnabled: true,
                 ),
-              },
-            ),
-            SlidingUpPanel(
-              panel: Center(
-                  child: ListView.builder(
-                      itemCount: buttons.length,
-                      itemBuilder: (BuildContext context, index) {
-                        return buttons[index];
-                      })),
-              collapsed: Container(
-                decoration:
-                    BoxDecoration(color: Colors.blueGrey, borderRadius: radius),
-                child: Center(
-                  child: Text(
-                    "Tap to see the Public Transports near you",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    ));
+                // SlidingUpPanel(
+                //   panel: Center(
+                //       child: ListView.builder(
+                //           itemCount: buttons.length,
+                //           itemBuilder: (BuildContext context, index) {
+                //             return buttons[index];
+                //           })),
+                //   collapsed: Container(
+                //     decoration: BoxDecoration(
+                //         color: Colors.blueGrey, borderRadius: radius),
+                //     child: Center(
+                //       child: Text(
+                //         "Tap to see the Public Transports near you",
+                //         style: TextStyle(color: Colors.white),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+              ],
+            );
+          },
+        ));
   }
 
   List<LatLng> polylineCoordinates = [];
@@ -141,8 +140,97 @@ class _MapState extends State<Map> {
         Marker(
             position: LatLng(element['lat'], element['long']),
             markerId: MarkerId(element['route']),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueMagenta)),
+            infoWindow: InfoWindow(
+              title: element['route'],
+              onTap: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (BuildContext context) {
+                    return Container(
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 29, 19, 14),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20))),
+                      height: 200,
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Driver name: ${element['name']}",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
+                                  ),
+                                  Text(
+                                    "Route: ${element['route']}",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
+                                  ),
+                                  Text(
+                                    "Type: ${element['type']}",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                          color: Colors.cyan[600],
+                                          gradient: LinearGradient(colors: [
+                                            Colors.red[400]!,
+                                            Colors.red[500]!,
+                                            Colors.red[700]!,
+                                            Colors.red[900]!
+                                          ]),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: Text('Show Route',
+                                          style: TextStyle(
+                                            fontSize: 26,
+                                            color: Colors.white,
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                            ),
+                            Positioned(
+                                top: 10,
+                                right: 20,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ))
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed)),
       );
     });
   }
