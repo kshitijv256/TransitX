@@ -20,7 +20,7 @@ class _TrackerState extends State<Tracker> {
           IconButton(
               onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => MyMap()));
+                    context, MaterialPageRoute(builder: (context) => Map()));
               },
               icon: Icon(Icons.map))
         ],

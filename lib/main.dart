@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 import 'package:transitx/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 requestPermission() async {
   var status = await Permission.location.request();
